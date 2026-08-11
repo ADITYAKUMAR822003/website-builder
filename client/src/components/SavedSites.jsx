@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-const API = "http://127.0.0.1:5001/api/websites";
+const API_BASE = process.env.REACT_APP_API_URL;
+const API = `${API_BASE}/api/websites`;
 
 export default function SavedSites({ token, onLoad, onLogin }) {
   const [sites, setSites] = useState([]);

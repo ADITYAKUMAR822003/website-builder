@@ -1,7 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
 
-const AUTH_API = "http://127.0.0.1:5001/api/auth";
+const API_BASE = process.env.REACT_APP_API_URL;
+const AUTH_API = `${API_BASE}/api/auth`;
 
 export default function AuthModal({ open, onClose, onSuccess }) {
   const [mode, setMode] = useState("login");

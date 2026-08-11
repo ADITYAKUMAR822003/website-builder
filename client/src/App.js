@@ -17,7 +17,8 @@ import SavedSites from "./components/SavedSites";
 import EditPanel from "./components/EditPanel";
 import AuthModal from "./components/AuthModal";
 
-const API = "http://127.0.0.1:5001/api/websites";
+const API_BASE = process.env.REACT_APP_API_URL;
+const API = `${API_BASE}/api/websites`;
 
 export default function App() {
   const [blocks, setBlocks] = useState([]);
@@ -202,7 +203,7 @@ export default function App() {
             {savedId && (
               <button
                 onClick={() => {
-                  navigator.clipboard.writeText(`http://localhost:5001/api/websites/${savedId}/preview`);
+                  navigator.clipboard.writeText(`${API_BASE}/api/websites/${savedId}/preview`);
                   showToast("Link copied to clipboard!");
                 }}
                 className="text-white/80 hover:text-white text-sm px-2 sm:px-3 py-1.5 rounded-lg hover:bg-white/10 transition-all hidden sm:block"

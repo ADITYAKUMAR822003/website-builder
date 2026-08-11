@@ -1,5 +1,5 @@
-const User = require("./models/User");
-const Website = require("./models/Website");
+const User = require('./models/User');
+const Website = require('./models/Website');
 
 async function findUserByEmail(email) {
   return User.findOne({ email }).lean({ virtuals: true });
@@ -26,15 +26,17 @@ async function addWebsite(site) {
 }
 
 async function updateWebsite(id, userId, updates) {
-  return Website.findOneAndUpdate(
-    { _id: id, user: userId },
-    updates,
-    { new: true, lean: true, virtuals: true }
-  );
+  return Website.findOneAndUpdate({ _id: id, user: userId }, updates, {
+    new: true,
+    lean: true,
+    virtuals: true,
+  });
 }
 
 async function deleteWebsite(id, userId) {
-  return Website.findOneAndDelete({ _id: id, user: userId }).lean({ virtuals: true });
+  return Website.findOneAndDelete({ _id: id, user: userId }).lean({
+    virtuals: true,
+  });
 }
 
 module.exports = {

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from 'react';
 import {
   DndContext,
   DragOverlay,
@@ -6,23 +6,23 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
-} from "@dnd-kit/core";
-import { arrayMove } from "@dnd-kit/sortable";
-import axios from "axios";
+} from '@dnd-kit/core';
+import { arrayMove } from '@dnd-kit/sortable';
+import axios from 'axios';
 
-import Sidebar from "./components/Sidebar";
-import Canvas from "./components/Canvas";
-import PreviewModal from "./components/PreviewModal";
-import SavedSites from "./components/SavedSites";
-import EditPanel from "./components/EditPanel";
-import AuthModal from "./components/AuthModal";
+import Sidebar from './components/Sidebar';
+import Canvas from './components/Canvas';
+import PreviewModal from './components/PreviewModal';
+import SavedSites from './components/SavedSites';
+import EditPanel from './components/EditPanel';
+import AuthModal from './components/AuthModal';
 
 const API_BASE = process.env.REACT_APP_API_URL;
 const API = `${API_BASE}/api/websites`;
 
 export default function App() {
   const [blocks, setBlocks] = useState([]);
-  const [siteName, setSiteName] = useState("My Website");
+  const [siteName, setSiteName] = useState('My Website');
   const [activeItem, setActiveItem] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -35,17 +35,17 @@ export default function App() {
   const [showAuth, setShowAuth] = useState(false);
 
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
   );
 
-  const showToast = (msg, type = "success") => {
+  const showToast = (msg, type = 'success') => {
     setToast({ msg, type });
     setTimeout(() => setToast(null), 3000);
   };
 
   useEffect(() => {
-    const storedToken = localStorage.getItem("token");
-    const storedUser = localStorage.getItem("user");
+    const storedToken = localStorage.getItem('token');
+    const storedUser = localStorage.getItem('user');
     if (storedToken) setAuthToken(storedToken);
     if (storedUser) setUser(JSON.parse(storedUser));
   }, []);
@@ -61,18 +61,18 @@ export default function App() {
   const handleAuthSuccess = ({ token, user }) => {
     setAuthToken(token);
     setUser(user);
-    localStorage.setItem("token", token);
-    localStorage.setItem("user", JSON.stringify(user));
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(user));
     setShowAuth(false);
-    showToast(`Welcome ${user.email}`, "success");
+    showToast(`Welcome ${user.email}`, 'success');
   };
 
   const handleLogout = () => {
     setAuthToken(null);
     setUser(null);
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    showToast("Logged out", "success");
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    showToast('Logged out', 'success');
   };
 
   const handleDragStart = ({ active }) => {
@@ -86,7 +86,7 @@ export default function App() {
     setActiveItem(null);
 
     // Dropped onto canvas from sidebar — must be over canvas, not sidebar
-    if (active.data.current?.item && over?.id === "canvas-drop") {
+    if (active.data.current?.item && over?.id === 'canvas-drop') {
       const item = active.data.current.item;
       const newBlock = {
         ...item,
@@ -112,26 +112,35 @@ export default function App() {
 
   const handleRemove = useCallback((instanceId) => {
     setBlocks((prev) => prev.filter((b) => b.instanceId !== instanceId));
-    setEditingBlock((prev) => prev?.instanceId === instanceId ? null : prev);
+    setEditingBlock((prev) => (prev?.instanceId === instanceId ? null : prev));
   }, []);
 
   const handleEdit = useCallback((block) => {
-    setEditingBlock((prev) => prev?.instanceId === block.instanceId ? null : block);
+    setEditingBlock((prev) =>
+      prev?.instanceId === block.instanceId ? null : block,
+    );
   }, []);
 
   const handleBlockUpdate = useCallback((instanceId, newHtml) => {
-    setBlocks((prev) => prev.map((b) => b.instanceId === instanceId ? { ...b, html: newHtml } : b));
-    setEditingBlock((prev) => prev?.instanceId === instanceId ? { ...prev, html: newHtml } : prev);
+    setBlocks((prev) =>
+      prev.map((b) =>
+        b.instanceId === instanceId ? { ...b, html: newHtml } : b,
+      ),
+    );
+    setEditingBlock((prev) =>
+      prev?.instanceId === instanceId ? { ...prev, html: newHtml } : prev,
+    );
   }, []);
 
   const handleSave = async () => {
     if (!authToken) {
-      showToast("Please login to save websites", "error");
+      showToast('Please login to save websites', 'error');
       setShowAuth(true);
       return;
     }
 
-    if (!siteName.trim()) return showToast("Please enter a website name", "error");
+    if (!siteName.trim())
+      return showToast('Please enter a website name', 'error');
     setIsSaving(true);
     try {
       const payload = { name: siteName, components: blocks };
@@ -146,10 +155,13 @@ export default function App() {
         const res = await axios.post(API, payload, config);
         setSavedId(res.data.id);
       }
-      showToast("Website saved successfully!");
+      showToast('Website saved successfully!');
     } catch (err) {
       console.error(err);
-      showToast(err.response?.data?.message || "Failed to save. Is the server running?", "error");
+      showToast(
+        err.response?.data?.message || 'Failed to save. Is the server running?',
+        'error',
+      );
     } finally {
       setIsSaving(false);
     }
@@ -164,7 +176,7 @@ export default function App() {
 
   const handleNew = () => {
     setBlocks([]);
-    setSiteName("My Website");
+    setSiteName('My Website');
     setSavedId(null);
   };
 
@@ -175,9 +187,15 @@ export default function App() {
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
-      <div className="flex flex-col h-screen overflow-hidden" style={{background:'#f5f5f5'}}>
+      <div
+        className="flex flex-col h-screen overflow-hidden"
+        style={{ background: '#f5f5f5' }}
+      >
         {/* Topbar */}
-        <div className="flex items-center gap-2 h-14 border-b px-3 sm:px-5 shrink-0 z-30" style={{background:'#b82025', borderColor:'#9a1b1f'}}>
+        <div
+          className="flex items-center gap-2 h-14 border-b px-3 sm:px-5 shrink-0 z-30"
+          style={{ background: '#b82025', borderColor: '#9a1b1f' }}
+        >
           <div className="flex items-center gap-2 flex-1 min-w-0">
             {/* Mobile sidebar toggle */}
             <button
@@ -186,32 +204,46 @@ export default function App() {
             >
               ☰
             </button>
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm shrink-0" style={{background:'#fff', color:'#b82025'}}>
+            <div
+              className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm shrink-0"
+              style={{ background: '#fff', color: '#b82025' }}
+            >
               W
             </div>
             <input
               value={siteName}
               onChange={(e) => setSiteName(e.target.value)}
-              className="text-sm font-medium px-3 py-1.5 rounded-lg border focus:outline-none w-28 sm:w-48 transition-colors min-w-0" style={{background:'rgba(255,255,255,0.2)', borderColor:'rgba(255,255,255,0.4)', color:'#fff'}}
+              className="text-sm font-medium px-3 py-1.5 rounded-lg border focus:outline-none w-28 sm:w-48 transition-colors min-w-0"
+              style={{
+                background: 'rgba(255,255,255,0.2)',
+                borderColor: 'rgba(255,255,255,0.4)',
+                color: '#fff',
+              }}
               placeholder="Website name..."
             />
           </div>
           <div className="flex items-center gap-1 sm:gap-2 shrink-0">
             <span className="text-white/60 text-xs hidden sm:block">
-              {blocks.length} block{blocks.length !== 1 ? "s" : ""}
+              {blocks.length} block{blocks.length !== 1 ? 's' : ''}
             </span>
             {savedId && (
               <button
                 onClick={() => {
-                  navigator.clipboard.writeText(`${API_BASE}/api/websites/${savedId}/preview`);
-                  showToast("Link copied to clipboard!");
+                  navigator.clipboard.writeText(
+                    `${API_BASE}/api/websites/${savedId}/preview`,
+                  );
+                  showToast('Link copied to clipboard!');
                 }}
                 className="text-white/80 hover:text-white text-sm px-2 sm:px-3 py-1.5 rounded-lg hover:bg-white/10 transition-all hidden sm:block"
               >
                 🔗
               </button>
             )}
-            <SavedSites token={authToken} onLoad={handleLoad} onLogin={() => setShowAuth(true)} />
+            <SavedSites
+              token={authToken}
+              onLoad={handleLoad}
+              onLogin={() => setShowAuth(true)}
+            />
             <button
               onClick={handleNew}
               className="text-white/80 hover:text-white text-sm px-2 sm:px-3 py-1.5 rounded-lg hover:bg-white/10 transition-all"
@@ -235,9 +267,11 @@ export default function App() {
             )}
             <button
               onClick={() => setShowPreview(true)}
-              className="text-sm px-3 sm:px-4 py-1.5 rounded-lg transition-all flex items-center gap-1.5 font-semibold" style={{background:'#fff', color:'#b82025'}}
+              className="text-sm px-3 sm:px-4 py-1.5 rounded-lg transition-all flex items-center gap-1.5 font-semibold"
+              style={{ background: '#fff', color: '#b82025' }}
             >
-              <span>👁</span><span className="hidden sm:inline"> Preview</span>
+              <span>👁</span>
+              <span className="hidden sm:inline"> Preview</span>
             </button>
           </div>
         </div>
@@ -252,16 +286,27 @@ export default function App() {
             />
           )}
           {/* Sidebar — drawer on mobile, static on desktop */}
-          <div className={`
+          <div
+            className={`
             fixed md:static inset-y-0 left-0 z-30
             transform transition-transform duration-300 ease-in-out
             md:transform-none md:translate-x-0
-            ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
+            ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
             md:flex md:shrink-0
-          `}>
-            <Sidebar onSave={handleSave} isSaving={isSaving} onClose={() => setSidebarOpen(false)} />
+          `}
+          >
+            <Sidebar
+              onSave={handleSave}
+              isSaving={isSaving}
+              onClose={() => setSidebarOpen(false)}
+            />
           </div>
-          <Canvas blocks={blocks} onRemove={handleRemove} onEdit={handleEdit} editingId={editingBlock?.instanceId} />
+          <Canvas
+            blocks={blocks}
+            onRemove={handleRemove}
+            onEdit={handleEdit}
+            editingId={editingBlock?.instanceId}
+          />
           {editingBlock && (
             <EditPanel
               block={editingBlock}
@@ -275,7 +320,13 @@ export default function App() {
       {/* Drag Overlay */}
       <DragOverlay>
         {activeItem && (
-          <div className="text-white text-sm font-semibold px-4 py-2 rounded-xl shadow-2xl backdrop-blur cursor-grabbing" style={{background:'rgba(184,32,37,0.9)', border:'1px solid rgba(184,32,37,0.5)'}}>
+          <div
+            className="text-white text-sm font-semibold px-4 py-2 rounded-xl shadow-2xl backdrop-blur cursor-grabbing"
+            style={{
+              background: 'rgba(184,32,37,0.9)',
+              border: '1px solid rgba(184,32,37,0.5)',
+            }}
+          >
             ⠿ {activeItem.label}
           </div>
         )}
@@ -296,9 +347,9 @@ export default function App() {
       {toast && (
         <div
           className={`fixed bottom-6 right-6 z-50 px-5 py-3 rounded-xl text-sm font-semibold shadow-2xl transition-all duration-300 ${
-            toast.type === "error"
-              ? "bg-red-600 text-white"
-              : "bg-emerald-600 text-white"
+            toast.type === 'error'
+              ? 'bg-red-600 text-white'
+              : 'bg-emerald-600 text-white'
           }`}
         >
           {toast.msg}

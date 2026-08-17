@@ -12,6 +12,13 @@ app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
 app.use(express.json());
 
+app.get('/', (req, res) => {
+  res.json({
+    message: 'Website Builder API is running.',
+    status: 'ok',
+  });
+});
+
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/websites', require('./routes/websites'));
 
